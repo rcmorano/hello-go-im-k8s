@@ -1,0 +1,5 @@
+namespace: hello-typeform
+resources:
+- namespace.yaml
+- deployment.yaml
+- service.yaml

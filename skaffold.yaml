@@ -1,0 +1,47 @@
+apiVersion: skaffold/v2alpha4
+kind: Config
+build:
+  insecureRegistries:
+    - localhost:5000
+  tagPolicy:
+    envTemplate:
+      template: "registry.local:5000/{{.IMAGE_NAME}}"
+  artifacts:
+  - image: hello-typeform
+    docker:
+      target: dev-env
+    sync:
+      manual:
+      - src: "src/**/*.go"
+        dest: "/src"
+      - src: "src/go.mod"
+        dest: "/src"
+      - src: "src/go.sum"
+        dest: "/src"
+
+deploy:
+  kustomize:
+    paths: ["kustomize/base"]
+
+profiles:
+- name: local
+  activation:
+    - env: ENVIRONMENT=local
+  deploy:
+    kustomize:
+      paths: ["kustomize/overlays/local"]
+
+- name: staging
+  activation:
+    - env: ENVIRONMENT=staging
+    - kubeContext: stg-hello-typeform
+      command: dev
+  build:
+    insecureRegistries:
+      - stg-hello-typeform:5000
+    tagPolicy:
+      envTemplate:
+        template: "stg-hello-typeform:5000/{{.IMAGE_NAME}}"
+  deploy:
+    kustomize:
+      paths: ["kustomize/overlays/staging"]

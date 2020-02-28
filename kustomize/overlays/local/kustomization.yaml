@@ -1,0 +1,12 @@
+namespace: local-hello-typeform
+namePrefix: local-
+commonLabels:
+  variant: local
+commonAnnotations:
+  note: this is your local k8s cluster!
+bases:
+- ../../base
+resources:
+- k3d-traefik-annotations.yaml
+- ngrok-deployment.yaml
+- ngrok-service.yaml

@@ -1,0 +1,82 @@
+#!/bin/bash
+
+function local-hello-typeform-init() {
+
+  hello-typeform-init
+  ENVIRONMENT=local
+  ANY_PROJECT_GENERIC_VAR_OVERRIDE=pooc
+  # kube related
+  export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
+  K8S_NAMESPACE=${ENVIRONMENT}-${PROJECT_NAME}
+
+}
+
+# Install all the required tools for the local development environment.
+function local-hello-typeform-setup() {
+
+  local-hello-typeform-init
+
+  # install docker
+  which docker || \
+    ( curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sh /tmp/get-docker.sh )
+  
+  # install k3d
+  which k3d || \
+    ( curl -fsSL https://raw.githubusercontent.com/rancher/k3d/master/install.sh -o /tmp/get-k3d.sh && bash /tmp/get-k3d.sh )
+
+  # setup k3s cluster if it's not already available
+  k3d get-kubeconfig --name='k3s-default' || \
+    k3d create \
+      --enable-registry \
+      --registry-name registry.local \
+      --publish 8081:80 \
+      --publish 8082:30080@k3d-k3s-default-server
+
+  grep -q 127.0.0.1.*registry.local /etc/hosts || \
+    sudo sed -i.bak 's|\(^127.0.0.1.*\)|\1 registry.local|' /etc/hosts
+  grep -q 127.0.0.1.*${PROJECT_NAME}.${ENVIRONMENT} /etc/hosts || \
+    sudo sed -i.bak "s|\(^127.0.0.1.*\)|\1 ${PROJECT_NAME}.${ENVIRONMENT}|" /etc/hosts
+
+
+  # install some k8s management tools baids
+  test -e ~/.baids/functions.d/k8s-baids || \
+    git clone https://github.com/rcmorano/k8s-baids.git ~/.baids/functions.d/k8s-baids
+  baids-reload
+
+  # install skaffold (this baid will install latest available version), optionally, we can:
+  # TOOL_VER=1.40.0 skaffold-install
+  which skaffold || \
+    skaffold-upgrade
+
+  # install kustomize (this baid will install latest available version), optionally, we can:
+  # TOOL_VER=0.0.0 kustomize-install
+  which kustomize || \
+    kustomize-upgrade-to-latest-version
+
+  # install rio
+  which rio || \
+    ( curl -sfL https://get.rio.io | sh - )
+
+}
+
+function local-hello-typeform-get-ngrok-details() {
+
+  local-hello-typeform-init
+  kubectl exec -n ${K8S_NAMESPACE} $(kubectl get pods -n ${K8S_NAMESPACE} -l=app=ngrok -o=jsonpath='{.items[0].metadata.name}') -- curl -s http://localhost:4040/api/tunnels | jq .
+
+}
+
+function local-hello-typeform-get-ngrok-https-url() {
+
+  local-hello-typeform-init
+  local-hello-typeform-get-ngrok-details | jq -r '.tunnels[] | select(.proto=="https").public_url'
+
+}
+
+function local-hello-typeform-up() {
+
+  local-hello-typeform-init
+  cd ${PROJECT_DIR}
+  skaffold dev -p ${ENVIRONMENT}
+
+}

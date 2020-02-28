@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-typeform
+spec:
+  selector:
+    matchLabels:
+      app: hello-typeform
+  template:
+    metadata:
+      labels:
+        app: hello-typeform
+    spec:
+      containers:
+      - name: hello-typeform
+        image: hello-typeform
+        ports:
+        - containerPort: 3000
+        env:
+          - name: ENVIRONMENT
+            value: "local"
+          - name: PORT
+            value: "3000"
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 3000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10
