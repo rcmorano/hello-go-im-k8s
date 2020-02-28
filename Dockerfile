@@ -9,8 +9,8 @@ WORKDIR /go/src
 COPY ./src app
 COPY ./src/go.mod go.mod
 COPY ./src/go.sum go.sum
-RUN test -e go.mod || go mod init app && \
-    go mod tidy
+RUN test -e go.mod || ( go mod init app && \
+    go mod tidy )
 RUN go mod download
 WORKDIR /go/src/app
 
