@@ -1,0 +1,21 @@
+cluster:
+  name: k3s
+  privateKey: k3s-cluster-key
+machines:
+- count: 1
+  backend: docker
+  spec:
+    image: quay.io/footloose/ubuntu16.04
+    privileged: true
+    name: node%d
+    portMappings:
+    - containerPort: 22
+      hostPort: 2222
+    - containerPort: 5000
+      hostPort: 15000
+    - containerPort: 6443
+      hostPort: 16443
+    - containerPort: 80
+      hostPort: 80
+    - containerPort: 443
+      hostPort: 443
