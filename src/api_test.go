@@ -1,19 +1,16 @@
 package main
 
 import (
-// TODO: implement tests in native Go instead of using external curl :)
-//  "fmt"
-//  "net/http"
-//  "net/http/httptest"
-  "os/exec"
+// TODO: uncomment this when tests are implemented tests
+  "fmt"
+  "net/http"
+  "net/http/httptest"
 
   "github.com/cucumber/godog"
   "github.com/cucumber/godog/gherkin"
 )
 
 func iSendRequestTo(arg1, arg2 string) error {
-  cmd := exec.Command("curl", "-O", url)
-  cmd.Run()
 	return godog.ErrPending
 }
 
