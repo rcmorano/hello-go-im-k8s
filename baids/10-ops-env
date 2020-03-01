@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function ops-hello-typeform-init() {
+
+  hello-typeform-init
+  K8S_NAMESPACE=ops
+  K8S_API_EXPOSED_PORT=$(cd ${PROJECT_DIR} && grep -A1 'containerPort: 6443' footloose.yaml | tail -n1 | awk '{print $NF}') 
+
+}
+
+function ops-hello-typeform-up() {
+
+  ops-hello-typeform-init
+  cd ${PROJECT_DIR}
+  footloose create
+  ansible-playbook -i ansible/hosts.ini ansible/site.yml
+
+}
+
+function ops-hello-typeform-destroy() {
+
+  ops-hello-typeform-init
+  cd ${PROJECT_DIR}
+  footloose delete
+
+}
+
+function ops-hello-typeform-get-kubeconfig() {
+
+  ops-hello-typeform-init
+  cd $PROJECT_DIR
+  footloose ssh root@node0 -- \
+    k3d get-kubeconfig --name='k3s-default' &> /dev/null
+  footloose ssh root@node0 -- \
+    cat /root/.config/k3d/k3s-default/kubeconfig.yaml | sed "s|localhost:6443|localhost:${K8S_API_EXPOSED_PORT}|g"
+  cd $OLDPWD
+
+}

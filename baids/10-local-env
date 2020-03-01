@@ -29,7 +29,8 @@ function local-hello-typeform-setup() {
     k3d create \
       --enable-registry \
       --registry-name registry.local \
-      --publish 8081:80 \
+      --publish 8080:80 \
+      --publish 8443:443 \
       --publish 8082:30080@k3d-k3s-default-server
 
   grep -q 127.0.0.1.*registry.local /etc/hosts || \
@@ -57,6 +58,20 @@ function local-hello-typeform-setup() {
   which rio || \
     ( curl -sfL https://get.rio.io | sh - )
 
+  # TODO: add this to k8s-baids project :)
+  # install kubectl
+  if ! which kubectl
+  then
+    CURRENT_OS=$(uname -s)
+    case "${CURRENT_OS}" in
+      Darwin*)  brew install kubectl;;
+      Linux*) curl -sL https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl;
+              chmod +x /usr/local/bin/kubectl;
+      ;;
+    esac
+  fi
+
+
 }
 
 function local-hello-typeform-get-ngrok-details() {
@@ -73,10 +88,29 @@ function local-hello-typeform-get-ngrok-https-url() {
 
 }
 
-function local-hello-typeform-up() {
+function local-hello-typeform-dev() {
 
   local-hello-typeform-init
   cd ${PROJECT_DIR}
   skaffold dev -p ${ENVIRONMENT}
+
+}
+
+function local-hello-typeform-run() {
+
+  local-hello-typeform-init
+  cd ${PROJECT_DIR}
+  skaffold run -p ${ENVIRONMENT}
+
+}
+
+
+function local-hello-typeform-shell() {
+
+  local-hello-typeform-init
+  POD=$(kubectl get pods -n ${K8S_NAMESPACE} | grep ^${ENVIRONMENT}-${PROJECT_NAME} | awk '{print $1}')
+  kubectl exec -n ${K8S_NAMESPACE} -it \
+    ${POD} -- \
+    bash
 
 }
