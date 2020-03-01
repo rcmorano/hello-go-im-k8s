@@ -2,7 +2,8 @@ apiVersion: skaffold/v2alpha4
 kind: Config
 build:
   insecureRegistries:
-    - localhost:5000
+    - registry.local:5000
+    - registry.local:15000
   tagPolicy:
     envTemplate:
       template: "registry.local:5000/{{.IMAGE_NAME}}"
@@ -12,16 +13,22 @@ build:
       target: dev-env
     sync:
       manual:
-      - src: "src/**/*.go"
-        dest: "/src"
+      # NOTE: uncomment this to also watch/sync tests etc
+      #- src: "src/**/*.go"
+      #  dest: "/src"
+      - src: "src/api*.go"
+        dest: "/go/src/app"
+        strip: "src"
       - src: "src/go.mod"
-        dest: "/src"
+        dest: "/go/src/app"
+        strip: "src"
       - src: "src/go.sum"
-        dest: "/src"
+        dest: "/go/src/app"
+        strip: "src"
 
 deploy:
-  kustomize:
-    paths: ["kustomize/base"]
+  kubectl:
+    manifests:
 
 profiles:
 - name: local
@@ -34,14 +41,25 @@ profiles:
 - name: staging
   activation:
     - env: ENVIRONMENT=staging
-    - kubeContext: stg-hello-typeform
-      command: dev
-  build:
-    insecureRegistries:
-      - stg-hello-typeform:5000
-    tagPolicy:
-      envTemplate:
-        template: "stg-hello-typeform:5000/{{.IMAGE_NAME}}"
+    - kubeContext: staging-hello-typeform
   deploy:
     kustomize:
       paths: ["kustomize/overlays/staging"]
+
+# NOTE: as per [0] not possible to use custom deploy scripts yet
+# [0] https://github.com/GoogleContainerTools/skaffold/issues/2277
+- name: rio-poc
+  activation:
+    - env: ENVIRONMENT=rio-poc
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "registry.local:15000/{{.IMAGE_NAME}}"
+    artifacts:
+    - image: hello-typeform
+      docker:
+        target: prod
+
+  deploy:
+    kubectl:
+      manifests:
