@@ -1,0 +1,10 @@
+---
+- name: Install docker daemon
+  shell: |
+    if ! which docker
+    then
+      curl -fsSL https://get.docker.com -o /tmp/get-docker.sh && sh /tmp/get-docker.sh
+    fi
+
+- name: Ensure docker service is running
+  service: name=docker state=started enabled=yes

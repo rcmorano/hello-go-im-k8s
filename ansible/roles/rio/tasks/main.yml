@@ -1,0 +1,10 @@
+---
+- name: Install rio CLI tool
+  shell: |
+    if ! which rio
+    then
+      curl -sfL https://get.rio.io | sh -
+    fi
+
+- name: Setup rio cluster
+  script: "{{ role_path }}/files/setup-rio.sh"

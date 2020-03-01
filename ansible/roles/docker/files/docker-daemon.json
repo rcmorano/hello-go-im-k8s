@@ -1,0 +1,6 @@
+{
+  "storage-driver": "devicemapper",
+  "storage-opts": [
+   "dm.override_udev_sync_check=true"
+  ]
+}

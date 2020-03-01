@@ -1,0 +1,8 @@
+---
+- name: Bootstrap a k3d-k3s-k8s cluster node
+  hosts: k3s
+  roles:
+    - common
+    - docker
+    - k3s
+    - rio

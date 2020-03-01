@@ -1,0 +1,6 @@
+- name: Install base os-level depends
+  package:
+    name: 
+      - ntpdate
+      - htop
+    state: latest

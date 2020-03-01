@@ -1,0 +1,4 @@
+k3s_ingress_http_port: 80
+k3s_ingress_https_port: 443
+k3s_enable_registry: --enable-registry
+k3s_registry_hostname: registry.local

@@ -1,0 +1,32 @@
+---
+- name: Install k3d tool
+  shell: |
+    if ! which k3d 
+    then
+      curl -fsSL https://raw.githubusercontent.com/rancher/k3d/master/install.sh -o /tmp/get-k3d.sh && bash /tmp/get-k3d.sh
+    fi
+
+# NOTE: jinja2 template failed to render the script
+- name: Copy k3s cluster setup script template
+  copy:
+    src: "{{ role_path }}/templates/setup-k3s.sh.tpl"
+    dest: /tmp/setup-k3s.sh
+
+- name: Setup k3s cluster
+  shell: |
+    set -x
+    if ! k3d get-kubeconfig --name='k3s-default'
+    then
+      export k3s_ingress_http_port={{ k3s_ingress_http_port }}
+      export k3s_ingress_https_port={{ k3s_ingress_https_port }}
+      export k3s_enable_registry={{ k3s_enable_registry }}
+      export k3s_registry_hostname={{ k3s_registry_hostname }}
+      env | grep ^k3s_ | while read env_pair
+      do
+        VAR_KEY=$(echo $env_pair | sed 's|\(.*\)=\(.*\)|\1|')
+        VAR_VAL=$(echo $env_pair | sed 's|\(.*\)=\(.*\)|\2|')
+        echo sed -i "s|_${VAR_KEY}_|${VAR_VAL}|g" /tmp/setup-k3s.sh
+        sed -i "s|_${VAR_KEY}_|${VAR_VAL}|g" /tmp/setup-k3s.sh
+      done
+      bash /tmp/setup-k3s.sh
+    fi
