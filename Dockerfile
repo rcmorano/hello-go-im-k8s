@@ -3,6 +3,7 @@ FROM golang:1.14 as dev-env
 ENV GIN_LADDR 0.0.0.0
 ENV GIN_PORT 3001
 ENV BIN_APP_PORT 3000
+ENV PORT 3000
 
 RUN go get -v github.com/codegangsta/gin
 WORKDIR /go/src
@@ -14,10 +15,11 @@ RUN test -e go.mod || ( go mod init app && \
 RUN go mod download
 WORKDIR /go/src/app
 
-RUN go build -o app api.go
-CMD gin --immediate run api.go
+RUN go build -o app api.go && \
+    chmod +x app
+CMD gin run api.go
 
 FROM gcr.io/distroless/base as prod
 ENV PORT 3000
-COPY --from=dev-env /go/src /
+COPY --from=dev-env /go/src/app/app /
 CMD ["/app"]
