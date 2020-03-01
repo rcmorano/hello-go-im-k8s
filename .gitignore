@@ -1,0 +1,5 @@
+k3s-cluster-key*
+*pem
+*_DISABLED
+.*.sw[a-z]
+kubeconfig*y*ml
