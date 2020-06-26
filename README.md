@@ -1,14 +1,16 @@
 # k8s-able Go local development environment
 
-This is a PoC toy project that integrates a Go application into a k8s deployment lifecycle bringing some cool features:
+This is a PoC toy project that I used to simulate the definition of the whole development lifecycle for a Go application that would end up deployed on k8s.
+
+It brings some cool features for the dev[ops]:
 
 * Easy local Kubernetes k3s cluster on top of Docker
 * Fast, lively build+reload+bdd-test Go applications inside the container thanks to [Gin]
 * Define deploy pipelines using [skaffold]
-* Extend your base profiles with [kustomize]
-* Export the local application to the world using [ngrok]
+* Extend your base k8s profiles with [kustomize] (or extend existing charts)
+* Seamlessly export your local application to the world using [ngrok]
 
-And some extras for [dev]ops:
+And some extras ones for [dev]ops:
 
 * Simulate larger k8s deployments using [ansible]-defined "VMs" using cheap [footloose] containers as base
 * Deploy on a production [rio]-hosted PaaS on larger k8s deployments in favor of the local k3s
