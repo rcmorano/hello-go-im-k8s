@@ -4,7 +4,7 @@ This is a PoC toy project that I used to simulate the definition of the whole de
 
 It brings some cool features for the dev[ops]:
 
-* Easy local Kubernetes k3s cluster on top of Docker
+* Easy local Kubernetes [k3s]/[k3d] cluster on top of [docker]
 * Fast, lively build+reload+bdd-test Go applications inside the container thanks to [Gin]
 * Define deploy pipelines using [skaffold]
 * Extend your base k8s profiles with [kustomize] (or extend existing charts)
