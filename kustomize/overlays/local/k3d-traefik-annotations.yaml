@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: hello-typeform
-  namespace: hello-typeform
+  name: hello-go
+  namespace: hello-go
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: hello-typeform.local
+  - host: hello-go.local
     http:
       paths:
       - backend:
-          serviceName: hello-typeform
+          serviceName: hello-go
           servicePort: 3000

@@ -1,4 +1,4 @@
-namespace: local-hello-typeform
+namespace: local-hello-go
 namePrefix: local-
 commonLabels:
   variant: local

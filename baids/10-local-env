@@ -1,8 +1,8 @@
 #!/bin/bash
 
-function local-hello-typeform-init() {
+function local-hello-go-init() {
 
-  hello-typeform-init
+  hello-go-init
   ENVIRONMENT=local
   ANY_PROJECT_GENERIC_VAR_OVERRIDE=pooc
   # kube related
@@ -12,9 +12,9 @@ function local-hello-typeform-init() {
 }
 
 # Install all the required tools for the local development environment.
-function local-hello-typeform-setup() {
+function local-hello-go-setup() {
 
-  local-hello-typeform-init
+  local-hello-go-init
 
   # install docker
   which docker || \
@@ -74,40 +74,40 @@ function local-hello-typeform-setup() {
 
 }
 
-function local-hello-typeform-get-ngrok-details() {
+function local-hello-go-get-ngrok-details() {
 
-  local-hello-typeform-init
+  local-hello-go-init
   kubectl exec -n ${K8S_NAMESPACE} $(kubectl get pods -n ${K8S_NAMESPACE} -l=app=ngrok -o=jsonpath='{.items[0].metadata.name}') -- curl -s http://localhost:4040/api/tunnels | jq .
 
 }
 
-function local-hello-typeform-get-ngrok-https-url() {
+function local-hello-go-get-ngrok-https-url() {
 
-  local-hello-typeform-init
-  local-hello-typeform-get-ngrok-details | jq -r '.tunnels[] | select(.proto=="https").public_url'
+  local-hello-go-init
+  local-hello-go-get-ngrok-details | jq -r '.tunnels[] | select(.proto=="https").public_url'
 
 }
 
-function local-hello-typeform-dev() {
+function local-hello-go-dev() {
 
-  local-hello-typeform-init
+  local-hello-go-init
   cd ${PROJECT_DIR}
   skaffold dev -p ${ENVIRONMENT}
 
 }
 
-function local-hello-typeform-run() {
+function local-hello-go-run() {
 
-  local-hello-typeform-init
+  local-hello-go-init
   cd ${PROJECT_DIR}
   skaffold run -p ${ENVIRONMENT}
 
 }
 
 
-function local-hello-typeform-shell() {
+function local-hello-go-shell() {
 
-  local-hello-typeform-init
+  local-hello-go-init
   POD=$(kubectl get pods -n ${K8S_NAMESPACE} | grep ^${ENVIRONMENT}-${PROJECT_NAME} | awk '{print $1}')
   kubectl exec -n ${K8S_NAMESPACE} -it \
     ${POD} -- \

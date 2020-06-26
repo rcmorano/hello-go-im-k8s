@@ -8,7 +8,7 @@ build:
     envTemplate:
       template: "registry.local:5000/{{.IMAGE_NAME}}"
   artifacts:
-  - image: hello-typeform
+  - image: hello-go
     docker:
       target: dev-env
     sync:
@@ -41,7 +41,7 @@ profiles:
 - name: staging
   activation:
     - env: ENVIRONMENT=staging
-    - kubeContext: staging-hello-typeform
+    - kubeContext: staging-hello-go
   deploy:
     kustomize:
       paths: ["kustomize/overlays/staging"]
@@ -56,7 +56,7 @@ profiles:
       envTemplate:
         template: "registry.local:15000/{{.IMAGE_NAME}}"
     artifacts:
-    - image: hello-typeform
+    - image: hello-go
       docker:
         target: prod
 

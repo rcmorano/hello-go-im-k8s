@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-typeform
+  name: hello-go
 spec:
   selector:
     matchLabels:
-      app: hello-typeform
+      app: hello-go
   template:
     metadata:
       labels:
-        app: hello-typeform
+        app: hello-go
     spec:
       containers:
-      - name: hello-typeform
-        image: hello-typeform
+      - name: hello-go
+        image: hello-go
         ports:
         - containerPort: 3001
         env:

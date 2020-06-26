@@ -1,5 +1,5 @@
 services:
-  hello-typeform:
+  hello-go:
     version: v0
     scale: 1
     cpus: 100m
@@ -8,7 +8,7 @@ services:
       concurrency: 10 # specify concurrent request each pod can handle(soft limit, used to scale service)
       maxReplicas: 10
       minReplicas: 1
-    image: registry.local:5000/hello-typeform@sha256:7e7a4433134c0bc1f2fa422945c555bbd44db5f9ba93bd08ef6efa6d21dfbcce
+    image: registry.local:5000/hello-go@sha256:7e7a4433134c0bc1f2fa422945c555bbd44db5f9ba93bd08ef6efa6d21dfbcce
     imagePullPolicy: always
     ports:
     - 80:3000/http,web # Service port 80 will be mapped to container port 3000 with protocol http, named `web`

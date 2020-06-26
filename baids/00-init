@@ -1,8 +1,8 @@
 #!/bin/bash
 
-function hello-typeform-init() {
+function hello-go-init() {
 
-  PROJECT_NAME="hello-typeform"
+  PROJECT_NAME="hello-go"
   REALPATH_CMD=$(get-realpath-cmd)
   PROJECT_DIR=$( dirname $(${REALPATH_CMD} $(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) ) )
 

@@ -16,6 +16,6 @@ spec:
       - name: ngrok
         image: wernight/ngrok
         command: ["ngrok"]
-        args: ["http", "local-hello-typeform:3000"]
+        args: ["http", "local-hello-go:3000"]
         ports:
         - containerPort: 4040

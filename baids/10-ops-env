@@ -1,33 +1,33 @@
 #!/bin/bash
 
-function ops-hello-typeform-init() {
+function ops-hello-go-init() {
 
-  hello-typeform-init
+  hello-go-init
   K8S_NAMESPACE=ops
   K8S_API_EXPOSED_PORT=$(cd ${PROJECT_DIR} && grep -A1 'containerPort: 6443' footloose.yaml | tail -n1 | awk '{print $NF}') 
 
 }
 
-function ops-hello-typeform-up() {
+function ops-hello-go-up() {
 
-  ops-hello-typeform-init
+  ops-hello-go-init
   cd ${PROJECT_DIR}
   footloose create
   ansible-playbook -i ansible/hosts.ini ansible/site.yml
 
 }
 
-function ops-hello-typeform-destroy() {
+function ops-hello-go-destroy() {
 
-  ops-hello-typeform-init
+  ops-hello-go-init
   cd ${PROJECT_DIR}
   footloose delete
 
 }
 
-function ops-hello-typeform-get-kubeconfig() {
+function ops-hello-go-get-kubeconfig() {
 
-  ops-hello-typeform-init
+  ops-hello-go-init
   cd $PROJECT_DIR
   footloose ssh root@node0 -- \
     k3d get-kubeconfig --name='k3s-default' &> /dev/null

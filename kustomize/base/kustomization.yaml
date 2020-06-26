@@ -1,4 +1,4 @@
-namespace: hello-typeform
+namespace: hello-go
 resources:
 - namespace.yaml
 - deployment.yaml
